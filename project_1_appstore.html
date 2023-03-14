@@ -7,7 +7,7 @@
 <html>
 
 <head>
-	<title>Dopetrope by HTML5 UP</title>
+	<title>Eva Verkade - Project</title>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 	<link rel="stylesheet" href="assets/css/main.css" />
@@ -46,41 +46,109 @@
 								<h2>Google PlayStore Advice</h2>
 								<p>A python project giving advice to a young start-up wanting to create a new app</p>
 							</header>
-							<p>This is all introduction text about the aim of the project.</p>
-							<p>This project is still under development.</p>
+							<p>This project is still under development!</p>
+							<p>In a notebook, two datasets containing data from the Google Play Store were
+								inspected, cleaned, and analysed. Data analysis was performed on the most relevant data
+								in order to give a substantiated advice regarding the creation and launching of one or
+								more new apps on the Google Play Store.</p>
 
 							<section>
 								<header>
 									<h3>Description of the datasets.</h3>
 								</header>
-								<p>Dataset 1</p>
-								<p>Dataset 2</p>
+								<p>The first dataset is 1,4 MB large, and contains data on all apps on the Google
+									AppStore by [date]. It holds data on the app size, the number of downloads, app
+									price, app category, and more.
+								</p>
+								<p>The second dataset was less important. This dataset was 7,7 MB large, and contains
+									data on the reviews of the apps in the google AppStore. Every line is a seperate
+									review, containing a rating, the translated review, and sentiment polarity (whether
+									the review used positive or negative words)and sentiment subjectivity (strength of
+									the review).
+								</p>
 							</section>
 
 							<section>
 								<header>
 									<h3>Data Preparation</h3>
 								</header>
+
 								<p>
-									Elementum odio duis semper risus et lectus commodo fringilla. Maecenas sagittis
-									convallis justo vel mattis.
-									placerat, nunc diam iaculis massa, et aliquet nibh leo non nisl vitae porta
-									lobortis, enim neque fringilla nunc,
-									eget faucibus lacus sem quis nunc suspendisse nec lectus sit amet augue rutrum
-									vulputate ut ut mi. Aenean
-									elementum, mi sit amet porttitor lorem ipsum dolor sit amet, consectetur adipiscing
-									elit. Lorem ipsum dolor
-									sit amet nullam consequat feugiat dolore tempus.
+									<bold>Data preparation steps</bold>
 								</p>
+								<ul>
+									<li>inspect the dataset visually</li>
+									<li>inspect the datatypes of the variables and change where necessary.</li>
+									<li>look for duplicates in the data</li>
+									<li>look for missing data: how much information is missing, and is this a problem?
+									</li>
+								</ul>
+
+								<h4>Move row .....</h4>
 								<p>
-									Nunc diam iaculis massa, et aliquet nibh leo non nisl vitae porta lobortis, enim
-									neque fringilla nunc,
-									eget faucibus lacus sem quis nunc suspendisse nec lectus sit amet augue rutrum
-									vulputate ut ut mi. Aenean
-									elementum, mi sit amet porttitor lorem ipsum dolor sit amet, consectetur adipiscing
-									elit. Lorem ipsum dolor
-									sit amet nullam consequat feugiat dolore tempus.
+									During my initial analysis and data preparation , I was unable to turn the new
+									variable of "Installs" into an int because the column contained the value 'Free'.
+									This value belongs to the category on the right of "Installs", which is "Type". I
+									ran into a similar problem when changing the data type of "Price" into a float (also
+									code below). It became clear that one or more rows have been moved in the dataset.
 								</p>
+								<p>Before continuing data preparation, this shifted row needs to be corrected.</p>
+								<p>SHOW CODE ON HOW THIS WAS DONE</p>
+								<code>
+									app_data["Installs"].unique()
+								</code>
+
+
+								<h4>Change datatypes of data</h4>
+								<h5>Column 'Reviews' to integer datatype</h5>
+								<p>Text here.</p>
+								<p>SHOW CODE ON HOW THIS WAS DONE</p>
+
+								<h5>Column 'Installs' to integer datatype</h5>
+								<p>Before changing this data to an integer datatype, the '+' and ',' in the string
+									values must be removed.</p>
+								<p>SHOW CODE ON HOW THIS WAS DONE</p>
+
+								<h5>Column 'Size' to integer datatype</h5>
+								<p>The column size contains both numeric and letter values. An example of a value is
+									'19M'. In order to change this data type to an integer, the M and K's need to be
+									removed from the string, and the numeric values multiplied by either 1000 (K) or
+									1,000,000 (M).</p>
+								<p>SHOW CODE ON HOW THIS WAS DONE</p>
+
+								<h5>Column 'Content Rating' to category datatype</h5>
+								<p>I checked the number of unique values in the 'Content Rating' column and decided this
+									column was suitable for a category datatype. A category datatype can reduce memory
+									usage by making the categories easier accessible in memory.</p>
+								<p>SHOW CODE ON HOW THIS WAS DONE</p>
+
+								<h5>Column 'Price' to float datatype</h5>
+								<p>'Price' is a suitable column to turn into a float. Before processing, the data values
+									were formatted like '$4.99'. The dollar sign was removed in order to turn this value
+									into a float.</p>
+								<p>SHOW CODE ON HOW THIS WAS DONE</p>
+
+								<h5>Column 'Type' to category datatype</h5>
+								<p>Similarly to the 'Content Rating' column, I checked the number of unique values in
+									the 'Type' column and decided this column was suitable for a category datatype.</p>
+								<p>SHOW CODE ON HOW THIS WAS DONE</p>
+
+								<h5>Column 'Rating' to float datatype</h5>
+								<p>Rating was a float datatype formatted like a string. No special editing was needed to
+									change the datatype of this column.</p>
+								<p>SHOW CODE ON HOW THIS WAS DONE</p>
+
+								<h4>Duplicate values</h4>
+								<p>It is important to check that all app names are unique, otherwise you run the risk of
+									analysing the same app multiple times, which will introduce bias.</p>
+								<p>Analysis showed a significant number of duplicate rows with the same app name. Rows
+									that were completely identical were removed from the dataset. Some rows had the same
+									app name but had slight differences in app size, rating, and number of
+									downloads. It was decided to keep one row per app and app category, since app
+									category is one of the main elements of the later data analysis</p>
+								<p>In the end, 1096 rows with duplicate values were removed from the dataset. The
+									dataset was left with 9745 rows.</p>
+								<p>SHOW CODE ON HOW THIS WAS DONE</p>
 							</section>
 
 							<section>
@@ -99,21 +167,48 @@
 									sit amet nullam consequat feugiat dolore tempus.
 								</p>
 							</section>
-							
+
 							<section>
 								<header>
-									<h3>Conclusion</h3>
+									<h3>Final Advice</h3>
 								</header>
+								<p>The current Google Play Store app market is filled with a wide choice variety and
+									almost 10.000 apps. The app store data of previous years was analysed with a focus
+									on the most succesful app categories and target audience, and paid and free apps
+									were compared. This data is most valuable to create a business plan for a new app
+									startup company</p>
 								<p>
-									Nunc diam iaculis massa, et aliquet nibh leo non nisl vitae porta lobortis, enim
-									neque fringilla nunc,
-									eget faucibus lacus sem quis nunc suspendisse nec lectus sit amet augue rutrum
-									vulputate ut ut mi. Aenean
-									elementum, mi sit amet porttitor lorem ipsum dolor sit amet, consectetur adipiscing
-									elit. Lorem ipsum dolor
-									sit amet nullam consequat feugiat dolore tempus. Elementum odio duis semper risus et
-									lectus commodo fringilla.
-									Maecenas sagittis convallis justo vel mattis.
+									Apps from the app categories communication, video players, social, entertainment,
+									and photography are downloaded most often (figure 1). This implies that these
+									categories are popular among smartphone users. Other popular categories include
+									productivity, game, travel and local, tools, and news and magazines. The app
+									categories family, game, and tools hold significantly more apps than other
+									categories. Similarly, while the app categories communication and social are large,
+									most of these apps connect to large established platforms such as Whatsapp,
+									Instagram, Google Hangouts, and more. The market for the app categories family,
+									games, tools, communication and social may be saturated already, and therefore my
+									recommendation is to focus on another popular categories such as entertainment,
+									photography, or productivity.
+								</p>
+								<p>
+									Analysis of the content rating showed that the most app installs were in the
+									categories everyone, everyone 10+ and the category teen (figure 5). The highest
+									number of installs were in the category teen, and therefore it is recommended to
+									focus on this target audience. From the 10 categories with most installs, teens
+									installed most apps from the categories video players, socials, news and magazines,
+									and entertainment.
+								</p>
+								<p>
+									Lastly, as seen in figure 7, the total number of installs is substantially higher
+									for free apps. Consumers might be more willing to try a new free app on the Play
+									Store. Therefore, it is recommended to create a free app with possible ads or in-app
+									purchases, in order to make the product profitable.
+								</p>
+								<p>
+									In conclusion, the Google Play Store is filled with many apps, but there is still
+									space for new apps with new functionality. My recommendation is to create a free app
+									targeted at teens in one of the popular app categories such as entertainment,
+									photography, productivity, tools, or game.
 								</p>
 							</section>
 						</article>
