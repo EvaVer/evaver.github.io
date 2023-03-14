@@ -2906,15 +2906,3 @@ input, select, textarea {
 			}
 
 	}
-
-
-	#project_tag {
-		margin: 1.2em 0 0 0;
-		padding: 0;
-		border: 0;
-		font-size: 80%;
-		background-color: #dddddd;
-	}
-	#project_tag:hover {
-		background-color: #c7c7c7;
-	}
