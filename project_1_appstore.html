@@ -90,13 +90,15 @@
 									variable of "Installs" into an int because the column contained the value 'Free'.
 									This value belongs to the category on the right of "Installs", which is "Type". I
 									ran into a similar problem when changing the data type of "Price" into a float (also
-									code below). It became clear that one or more rows have been moved in the dataset.
+									code below). It became clear that one or more rows had shifted in the dataset.
 								</p>
 								<p>Before continuing data preparation, this shifted row needs to be corrected.</p>
 								<p>SHOW CODE ON HOW THIS WAS DONE</p>
+								<pre>
 								<code>
 									app_data["Installs"].unique()
 								</code>
+							</pre>
 
 
 								<h4>Change datatypes of data</h4>
