@@ -95,16 +95,54 @@
 								<p>Before continuing data preparation, this shifted row needs to be corrected.</p>
 								<p>SHOW CODE ON HOW THIS WAS DONE</p>
 								<pre>
-								<code>
-									app_data["Installs"].unique()
-								</code>
-							</pre>
+									<code id="code_block">
+app_data["Installs"].unique()
+									</code>
+								</pre>
+
+								<div id="output">
+									Out:
+									<span id="inner_output">array(['10,000+', '500,000+', '5,000,000+', '50,000,000+',
+										'100,000+','50,000+', '1,000,000+', '10,000,000+', '5,000+', '100,000,000+',
+										'1,000,000,000+', '1,000+', '500,000,000+', '50+', '100+', '500+', '10+', '1+',
+										'5+', '0+', '0'], dtype=object)</span>
+								</div>
+								
+								<pre>
+									<code id="code_block">
+app_data["Installs"].unique()
+move_column = app_data.index[app_data["Installs"] == 'Free'].tolist()
+									</code>
+								</pre>
+
+								<pre>
+									<code id="code_block">
+# Remove all non-numeric values in each number
+installs = app_data["Installs"]
+new_installs = []
+
+# Remove the commas, periods, spaces and plus signs.
+# Loop over every object in the series, then loop over each character in each object and check if it is alphanumeric.
+for number in installs:
+	new_object = ''
+	for char in number:
+		if char.isalnum():
+		new_object += char
+	else:
+		pass
+	new_installs.append(new_object)
+									</code>
+								</pre>
 
 
 								<h4>Change datatypes of data</h4>
 								<h5>Column 'Reviews' to integer datatype</h5>
-								<p>Text here.</p>
-								<p>SHOW CODE ON HOW THIS WAS DONE</p>
+								<p>This was the easiest column to convert.</p>
+								<pre>
+									<code id="code_block">
+app_data["Reviews"] = app_data["Reviews"].astype(int)
+									</code>
+								</pre>
 
 								<h5>Column 'Installs' to integer datatype</h5>
 								<p>Before changing this data to an integer datatype, the '+' and ',' in the string
