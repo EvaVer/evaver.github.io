@@ -43,7 +43,8 @@
 
 						<!-- Content -->
 						<article class="box post">
-							<a href="#" class="image featured"><img src="images/pic01.jpg" alt="" /></a>
+							<a href="#" class="image featured"><img
+									src="images/project_1/pic_project_1_appstore_large.png" alt="" /></a>
 							<header>
 								<h2>Google PlayStore Advice</h2>
 								<p>A python project giving advice to a young start-up wanting to create a new app</p>
@@ -54,30 +55,33 @@
 								in order to give a substantiated advice regarding the creation and launching of one or
 								more new apps on the Google Play Store.</p>
 
-							<section>
+							<section id="description_dataset">
 								<header>
 									<h3>Description of the datasets.</h3>
 								</header>
 								<p>The first dataset is 1,4 MB large, and contains data on all apps on the Google
-									AppStore by [date]. It holds data on the app size, the number of downloads, app
+									PlayStore by [date]. It holds data on the app size, the number of downloads, app
 									price, app category, and more.
 								</p>
-								<p>The second dataset was less important. This dataset was 7,7 MB large, and contains
-									data on the reviews of the apps in the google AppStore. Every line is a seperate
-									review, containing a rating, the translated review, and sentiment polarity (whether
-									the review used positive or negative words)and sentiment subjectivity (strength of
-									the review).
+								<p>The second dataset was 7,7 MB large, and contains app review data. Every line holds a
+									single
+									review, including the given rating, the translated review, sentiment polarity
+									(whether
+									the review used positive or negative words), and sentiment subjectivity (strength of
+									the review). Sentiment polarity and sentiment subjectivity were obtained using AI
+									text interpretation.
 								</p>
+								<p>Both datasets were given to me by someone else. They seem to be the same as <a
+										href="https://www.kaggle.com/datasets/lava18/google-play-store-apps?select=googleplaystore.csv">this
+										Kaggle dataset</a>.</p>
 							</section>
 
-							<section>
+							<section id="data_preparation_1">
 								<header>
 									<h3>Data Preparation: Dataset 1</h3>
 								</header>
-								<p>
-									<bold>Data preparation steps</bold>
-								</p>
 								<ul>
+									<bold>Data preparation steps</bold>
 									<li>inspect the dataset visually</li>
 									<li>inspect the datatypes of the variables and change where necessary.</li>
 									<li>look for duplicates in the data</li>
@@ -89,6 +93,7 @@
 import pandas as pd
 import numpy as np</code></pre>
 
+								<br>
 								<h4>Inspect the dataset visually</h4>
 								<pre><code class="language-py line-numbers">app_data = pd.read_csv('googleplaystore.csv')
 
@@ -109,13 +114,14 @@ android_ver = app_data.pop('Android Ver')
 genres = app_data.pop('Genres')</code></pre>
 
 
-								<br><h4>Shifted Row</h4>
+								<br>
+								<h4>Shifted Row</h4>
 								<p>
 									During my initial analysis and data preparation , I was unable to turn the new
 									variable of "Installs" into an int because the column contained the value 'Free'.
 									This value belongs to the category on the right of "Installs", which is "Type". I
-									ran into a similar problem when changing the data type of "Price" into a float (also
-									code below). It became clear that one or more rows had shifted in the dataset.
+									ran into a similar problem when changing the data type of "Price" into a float. It
+									became clear that one or more rows had shifted in the dataset.
 								</p>
 								<p>Before continuing data preparation, this shifted row needs to be corrected.</p>
 								<pre><code class="language-py line-numbers">app_data["Installs"].unique()</code></pre>
@@ -128,19 +134,18 @@ genres = app_data.pop('Genres')</code></pre>
 									'10+', '1+', '5+', '0+', '0', 'Free'], dtype=object)
 								</div>
 
-								<pre><code class="language-py line-numbers">column_to_move = app_data.index[app_data["Installs"] == 'Free'].tolist()</code></pre>
-
-								<div class="code_output">
-									Out:
-									[10472]
+								<pre><code class="language-py line-numbers"> # Get the index of the column(s) that has shifted.
+column_to_move = app_data.index[app_data["Installs"] == 'Free'].tolist()</code></pre>
+								<div class="code_output"> Out: [10472]
 								</div>
 
 								<pre><code class="language-py line-numbers"># Show the data of this one row with value 'Free'
 app_data.iloc[10472]</code></pre>
+								<div class="code_output">
+									<img src="images/project_1/pic3_shiftedrow_1.png" src="image showing a shifted row">
+								</div>
 
-								<img src="images/project_1/pic3_shiftedrow_1.png" src="image showing a shifted row">
-
-								<pre><code class="language-py line-numbers"># Shift this one row one column to the right starting from 'Installs', so that the variables match up.
+								<pre><code class="language-py line-numbers"># Shift all values in this row one column to the right starting from 'Installs', so that the variables match up.
 column_to_move_int = column_to_move[0]
 
 installs = app_data["Installs"]
@@ -148,8 +153,8 @@ installs_row = installs[column_to_move_int]
 
 #This shifts the data of this column one space below (this is a series).
 app_data.iloc[10472] = app_data.iloc[10472].shift(1, fill_value=float("NaN"))</code></pre>
-
-								<img src="images/project_1/pic3_shiftedrow_2.png" src="image showing a shifted row">
+								<div class="code_output"><img src="images/project_1/pic3_shiftedrow_2.png"
+										src="image showing a shifted row"></div>
 
 								<pre><code class="language-py line-numbers"># Change the variable in 'App' (now nan) to the variable in 'Category', which now contains the app name.
 app_data.at[10472, "App"] = app_data.at[10472, "Category"]
@@ -160,16 +165,20 @@ app_data.at[10472, "Category"] = float("nan")
 
 # Check that the values of this column are correct now.
 app_data.iloc[10472]</code></pre>
-
-								<img src="images/project_1/pic3_shiftedrow_3_solved.png"
-									src="image showing a shifted row">
+								<div class="code_output"><img src="images/project_1/pic3_shiftedrow_3_solved.png"
+										src="image showing a shifted row"></div>
 
 								<div>
-									<h4>Change datatypes of data</h4>
+									<h4>Change datatypes of columns</h4>
+									<p>As mentioned previously, the data types of all columns were 'object' upon loading
+										the dataset into python. Integers and floats cannot be analysed when its data
+										type is object (string). Therefore, most data columns have to be cast to the
+										proper data type to do proper analyses later.</p>
 									<h5>Column 'Reviews' to integer datatype</h5>
 									<p>This was the easiest column to convert.</p>
 									<pre><code class="language-py line-numbers">app_data["Reviews"] = app_data["Reviews"].astype(int)</code></pre>
 
+									<br>
 									<h5>Column 'Installs' to integer datatype</h5>
 									<p>Before changing this data to an integer datatype, the '+' and ',' in the string
 										values must be removed.</p>
@@ -182,9 +191,7 @@ app_data.iloc[10472]</code></pre>
 										'1,000,000,000+', '1,000+', '500,000,000+', '50+', '100+', '500+', '10+',
 										'1+', '5+', '0+', '0'], dtype=object)
 									</div>
-									<pre><code class="language-py line-numbers"># Remove all non-numeric characters in each value
-
-installs = app_data["Installs"]
+									<pre><code class="language-py line-numbers">installs = app_data["Installs"]
 new_installs = [ ]
 	
 # Remove the commas, periods, spaces and plus signs.
@@ -210,9 +217,7 @@ app_data["Installs"] = app_data["Installs"].astype(int)</code></pre>
 										'19M'. In order to change this data type to an integer, the M and K's need to be
 										removed from the string, and the numeric values multiplied by either 1000 (K) or
 										1,000,000 (M).</p>
-									<pre><code class="language-py line-numbers"># Remove all non-numeric values in each number
-
-size = app_data["Size"]
+									<pre><code class="language-py line-numbers">size = app_data["Size"]
 new_size_list = []
 
 # Loop over every value in the series.
@@ -228,7 +233,7 @@ for value in size:
         size_letter = ''
         numeric_value = 0
     
-        # get size (letter, is 'Kb' or 'Mb')
+        # get size (letter, is 'K' or 'M')
         size_letter = value[-1].lower()
         
         # get the numeric value
@@ -236,9 +241,9 @@ for value in size:
         
         # multiply numeric value with size (letter)
         if size_letter == 'k':
-            numeric_values = numeric_values * 1000     #K is 1000
+            numeric_values = numeric_values * 1000     # KB is 1000 bytes
         elif size_letter == 'm':
-            numeric_values = numeric_values * 1000000  #M is 1.000.000
+            numeric_values = numeric_values * 1000000  # MB is 1.000.000 bytes
             
         new_object = int(numeric_values)
         
@@ -254,17 +259,13 @@ app_data["Size"] = app_data["Size"].astype(float)</code></pre>
 									<br>
 									<h5>Column 'Content Rating' to category datatype</h5>
 									<p>I checked the number of unique values in the 'Content Rating' column and decided
-										this
-										column was suitable for a category datatype. A category datatype can reduce
-										memory
-										usage by making the categories easier accessible in memory.</p>
+										this column was suitable for a category datatype. A category datatype can reduce
+										memory usage by making the categories more accessible in memory.</p>
 									<pre><code class="language-py line-numbers"># check how many unique values are in the 'Content Rating'. 
 print(app_data["Content Rating"].nunique())
 print(app_data["Content Rating"].unique())</code></pre>
-
-									<div class="code_output">Out:
-										6<br>
-										['Everyone' 'Teen' 'Everyone 10+' 'Mature 17+' 'Adults only 18+' 'Unrated']
+									<div class="code_output">Out: 6<br>
+										Out: ['Everyone' 'Teen' 'Everyone 10+' 'Mature 17+' 'Adults only 18+' 'Unrated']
 									</div>
 
 									<pre><code class="language-py line-numbers">app_data["Content Rating"] = app_data["Content Rating"].astype("category")</code></pre>
@@ -272,12 +273,10 @@ print(app_data["Content Rating"].unique())</code></pre>
 									<br>
 									<h5>Column 'Price' to float datatype</h5>
 									<p>'Price' is a suitable column to turn into a float. Before processing, the data
-										values
-										were formatted like '$4.99'. The dollar sign was removed in order to turn this
-										value
-										into a float.</p>
-									<pre><code class="language-py line-numbers"># Remove all non-numeric values in each number
-price = app_data["Price"]
+										values were formatted like '$4.99'. The dollar sign was removed in order to turn
+										this
+										value into a float.</p>
+									<pre><code class="language-py line-numbers">price = app_data["Price"]
 new_price = []
 	
 # Remove the '$' sign in each row of "Price".
@@ -369,7 +368,8 @@ print(len(app_data))</code></pre>
 								<pre><code class="language-py line-numbers"># Inspect the duplicates of the 'App' value. These values have the same app name, but other values for other variables
 app_data[app_data.duplicated(subset="App", keep=False)].sort_values(by='App').head(15)</code></pre>
 
-								<div class="code_output"><img src="" alt="image showing duplicate rows"></div>
+								<div class="code_output"><img src="images/project_1/pic5_duplicates_2.png"
+										alt="image showing duplicate rows"></div>
 
 								<pre><code class="language-py line-numbers"># Keep only the first instance of a row where 'App' and 'Category' are unique. Drop other values.
 app_data = app_data.drop_duplicates(subset=['App', 'Category'], keep='first').sort_values(by='App')
@@ -382,15 +382,12 @@ print(len(app_data))</code></pre>
 									dataset was left with 9745 rows.</p>
 							</section>
 
-							<section>
+							<section id="data_preparation_2">
 								<header>
 									<h3>Data Preparation: Dataset 2</h3>
 								</header>
-
-								<p>
-									<bold>Data preparation steps</bold>
-								</p>
 								<ul>
+									<bold>Data preparation steps</bold>
 									<li>inspect the dataset visually</li>
 									<li>look for missing data: how much information is missing, and is this a problem?
 									</li>
@@ -412,7 +409,7 @@ reviews.head(10)</code></pre>
 								<h4>Missing data</h4>
 								<p>This table has a lot of missing data as shown by the info( ) method in the cell
 									above. Only 'App' has full data on everything. </p>
-								<p>In this data frame, it is not a problem if 'Translated_Review' is missing since this
+								<p>In this dataset, it is not a problem if 'Translated_Review' is missing since this
 									data analysis will not include a text analysis. However, we do need a value for
 									'Sentiment', 'Sentiment_Polarity' and 'Sentiment_Subjectivity' in order to analyse
 									the data.</p>
@@ -444,19 +441,7 @@ reviews["Sentiment"] = reviews["Sentiment"].fillna("Missing")
 reviews["Sentiment"] = reviews["Sentiment"].astype("category")</code></pre>
 							</section>
 
-
-
-
-
-
-
-
-
-
-
-
-
-							<section>
+							<section id="data_results">
 								<header>
 									<h3>Data Analysis Results</h3>
 								</header>
@@ -464,7 +449,8 @@ reviews["Sentiment"] = reviews["Sentiment"].astype("category")</code></pre>
 									target audience range within these categories. Additionally, the popularity of free
 									apps was compared to the popularity of paid apps. These variables were deemed to be
 									most important for creating an advice.</p>
-								<ul><bold>App characteristics that were studied:</bold>
+								<ul>
+									<bold>App characteristics that were studied:</bold>
 									<li>App category</li>
 									<li>App content rating (age group of target audience)</li>
 									<li>App costs</li>
@@ -478,41 +464,48 @@ import seaborn as sns
 # Show matplotlib's plots in Jupyter notebook
 %matplotlib inline</code></pre>
 
-								<br><h4>App categories</h4>
-								<br><h5>Mean number of downloads per category</h5>
-								<pre><code class="language-py line-numbers">app_data['Category'].value_counts().head(10)</code></pre>
-								<div class="code_output"> <img src="images/project_1/pic8_res_apps_per_cat.png"> </div>
-								<p>In the table above we can see the app categories with the most apps. Categories with a lot of apps are family, game, tools, business and medical. if a category has many apps currently, then it will be likely that the market for apps of said category is already saturated.</p>
-								
-								<br><h5>Mean app rating per category</h5>
-<pre><code class="language-py line-numbers">
-# Get the mean number of installations of apps per app category.
+								<div id="app_categories">
+									<br>
+									<h4>App categories</h4>
+									<br>
+									<h5>Number of apps per category</h5>
+									<pre><code class="language-py line-numbers">app_data['Category'].value_counts().head(10)</code></pre>
+									<div class="code_output"> <img src="images/project_1/pic8_res_apps_per_cat.png">
+									</div>
+									<p>In the table above we can see the app categories with the most apps. Categories
+										with
+										a lot of apps are family, game, tools, business and medical. if a category has
+										many
+										apps currently, then it will be likely that the market for apps of said category
+										is
+										already saturated.</p>
+
+
+
+									<br>
+									<h5>Mean number of downloads per category</h5>
+									<pre><code class="language-py line-numbers"># We will look at the mean number of downloads of apps per app category.
 mean_installs_per_category = app_data.groupby("Category_cat", as_index = False)["Installs"].mean()
-	
-# Then sort these categories by the number of installs
-mean_installs_per_category = mean_installs_per_category.sort_values(by="Installs", ascending=False)</code></pre>
+									
+# These values are then sorted by the number of downloads. Only the top 10 is included
+mean_installs_per_category = mean_installs_per_category.sort_values(by="Installs", ascending=False).head(10)
+mean_installs_per_category</code></pre>
 
-<div class="code_output"> <img src="images/project_1/"> </div>
+									<div class="code_output"> <img
+											src="images/project_1/pic9_res_downloads_per_cat.png"></div>
 
+									<pre><code class="language-py line-numbers">top_10_downloads_categories = ['COMMUNICATION', 'VIDEO_PLAYERS', 'SOCIAL', 'ENTERTAINMENT', 'PHOTOGRAPHY', 'PRODUCTIVITY', 'GAME', 'TRAVEL_AND_LOCAL', 'TOOLS', 'NEWS_AND_MAGAZINES']
 
+# select only data within the 10 categories with the most downloads.
+top_10_categories_most_installs = app_data[app_data['Category'].isin(top_10_downloads_categories)]
 
-<pre><code class="language-py line-numbers"># select only data within the 10 most popular categories. 
-top_10_categories = ['COMMUNICATION', 'VIDEO_PLAYERS', 'SOCIAL', 'ENTERTAINMENT', 'PHOTOGRAPHY', 'PRODUCTIVITY', 'GAME', 'TRAVEL_AND_LOCAL', 'TOOLS', 'NEWS_AND_MAGAZINES']
-
-
-
-
-top_10_categories_most_installs = app_data[app_data['Category'].isin(top_10_categories)]
-
-# Get the mean number of app downloads per app category.
+# Calculate the mean number of app downloads, and sort the results by the number of downloads
 top_10_categories_most_installs = top_10_categories_most_installs.groupby("Category", as_index = False)["Installs"].mean()
-# Then sort these categories by the number of downloads
 top_10_categories_most_installs = top_10_categories_most_installs.sort_values(by='Installs', ascending=False)
 
 
-# Create a bar plot of the 10 most popular categories
-# Create a base bar plot to show the mean number of installs.
-installspercat = sns.barplot(data=m_installs_top_10_ordered, x='Installs', y='Category', palette='viridis')
+# Create a bar plot of the 10 app categories with the most downloads
+installspercat = sns.barplot(data=top_10_categories_most_installs, x='Installs', y='Category', palette='viridis')
 plt.tight_layout()
 
 # title
@@ -522,39 +515,234 @@ plt.title('Figure 1A.\nMean number of installs per app category')
 sns.despine(bottom=True, left=True)
 installspercat.tick_params(bottom=False, left=False)
 
-
-top_10_installs
-
-</code></pre>
-
-								<p>This is a paragraph</p>
-								
-								<br><h5>Sentiment polarity per category</h5>
-								<p>This is a paragraph</p>
-
-								<br><h4>App target audience</h4>
-								<br><h5>Mean number of downloads per age group</h5>
-								<p>This is a paragraph</p>
-								<br><h5>Mean number of downloads per age group per category</h5>
-								<p>This is a paragraph</p>
-
-								<br><h4>App costs</h4>
-								<p>Paid vs free apps</p>
-								<p>This is a paragraph</p>
+plt.show()</code></pre>
+									<div class="code_output"> <img
+											src="images/project_1/pic9_res_downloads_per_cat_Fig1A.png"> </div>
+									<p>Apps from the app categories communication, video players, social, entertainment
+										and
+										photography have the highest mean number of downloads. This implies that apps in
+										these categories are popular among smartphone users and are used most.</p>
 
 
 
+									<br>
+									<h5>Sentiment polarity per app category</h5>
+									<pre><code class="language-py line-numbers"># merge the two datasets with app data and app review data. 
+merged_df = app_data.merge(reviews, on='App')
+																
+# Drop all columns that are not used in the following analysis. 
+columns_to_drop = ['Translated_Review']
+merged_df = merged_df.drop(columns_to_drop, axis=1)</code></pre>
+
+									<pre><code class="language-py line-numbers"># Create a boxplot showing the mean rating per app category per sentiment polarity category
+rating_sentimentcat_plot = sns.boxplot(data=merged_df, x='Sentiment', y='Rating', palette='viridis')
+
+# title
+plt.title('Figure 2.\nMean app rating per sentiment category')
+	
+# remove axes and change labels
+sns.despine(left=True)
+rating_sentimentcat_plot.tick_params(which='both', bottom=False)
+	
+rating_sentimentcat_plot.set_xlabel('Sentiment Polarity')
+
+plt.show()</code></pre>
+									<div class="code_output"> <img
+											src="images/project_1/pic10_res_rating_per_sentiment_Fig2.png"
+											alt="mean rating per sentiment polarity category"> </div>
+									<p>In figure 2 we can see that the mean app ratings per
+										sentiment category of the reviews are very similar. Mean rating is between 4.2
+										and 4.4 for negative sentiment, neutral sentiment, and positive sentiment. It
+										was expected that app rating would be higher for a positive sentiment, and lower
+										for a neutral sentiment, but the difference in mean rating is minimal. </p>
+
+									<pre><code class="language-py line-numbers"># We will look at the mean sentiment polarity of apps per app category.
+mean_sentiment = merged_df.groupby('Category', as_index=False)["Sentiment_Polarity"].mean()
+									
+#sort values 
+mean_sentiment = mean_sentiment.sort_values(by='Sentiment_Polarity', ascending=False)
+
+
+# create a bar chart.
+sentimentpercat = sns.barplot(data=mean_sentiment, x='Sentiment_Polarity', y='Category', palette='viridis')
+	
+# title
+plt.title('Figure 3.\nMean sentiment polarity per app category')
+	
+# remove axes and change labels
+sns.despine(left=True)
+sentimentpercat.tick_params(which='both', left=False)
+sentimentpercat.set_xlabel('Sentiment Polarity')
+sentimentpercat.set_xlabel('Category')
+	
+plt.show()</code></pre>
+									<div class="code_output"> <img
+											src="images/project_1/pic11_res_sentiment_per_cat_Fig3.png"
+											alt="sentiment polarity per app category"> </div>
+									<p>Sentiment polarity varies widely between the categories, but it is highest for
+										the
+										app categories comics, events, and auto and vehicles. Sentiment polarity is a
+										measure of how strongly a consumer feels about something. In this case, it
+										reflects
+										how strongly a reviewer felt about an app, based off review text analysis. That
+										means that people feel more strongly about the app categories comics, events,
+										and auto and vehicles, which have a high sentiment polarity as seen in figure 3.
+									</p>
 
 
 
+
+									<h5>Mean app rating per app category</h5>
+									<pre><code class="language-py line-numbers"># We will look at the mean app rating, separated by the different categories.
+m_rating_per_cat = app_data.groupby("Category", as_index = False)["Rating"].mean()
+
+# sort by the mean app rating
+m_rating_per_cat = m_rating_per_cat.sort_values(by="Rating", ascending=False)
+
+m_rating_per_cat.head(10)</code></pre>
+
+									<div class="code_output"> <img src="images/project_1/pic12_rating_per_cat.png">
+									</div>
+
+									<pre><code class="language-py line-numbers"># select only data within the 10 categories with the highest rating 
+top_10_ratings_categories = ['EVENTS', 'EDUCATION', 'ART_AND_DESIGN', 'BOOKS_AND_REFERENCE', 'PERSONALIZATION', 'PARENTING', 'BEAUTY', 'GAME','SOCIAL', 'WEATHER']
+
+top_10_categories_highest_rating = app_data[app_data['Category'].isin(top_10_ratings_categories)]
+											
+# Calculate the mean app rating, and sort the results by mean app rating
+top_10_categories_highest_rating = top_10_categories_highest_rating.groupby("Category", as_index = False)["Rating"].mean()
+top_10_categories_highest_rating = top_10_categories_highest_rating.sort_values(by='Rating', ascending=False)
+						
+												
+# Create a bar plot of the 10 app categories with the highest rating
+ratingpercat = sns.barplot(data=m_rating_per_cat_sorted, x='Rating', y='Category', palette='viridis')
+plt.tight_layout()
+											
+# title
+plt.title('Figure 4.\nMean rating for the 10 highest rated app categories')
+											
+# remove axes and change labels
+sns.despine(bottom=True, left=True)
+ratingpercat.tick_params(axis='y', which='both', left=False)
+											
+plt.show()</code></pre>
+									<div class="code_output"> <img
+											src="images/project_1/pic13_res_rating_per_cat_Fig4.png"> </div>
+
+									<p>Figure 4 shows that the differences in mean rating between the different
+										categories - only the top 10 is shown here - are minimal. When we assume that a
+										high rating is synonomous with a high liking of an app, we can conclude that the
+										different app categories are not liked in different amounts. </p>
+								</div>
+
+								<div id="app_content_rating">
+									<br>
+									<h4>App target audience</h4>
+									<h5>Mean number of downloads per age group</h5>
+									<pre><code class="language-py line-numbers">m_installs_per_cr = app_data.groupby("Content Rating", as_index = False)["Installs"].mean()
+m_installs_per_cr_sorted = m_installs_per_cr.sort_values(by='Installs', ascending=False)
+
+
+# create a bar plot. Use 'order' parameter to change the order of the x-axis content rating categories.
+order_var = ['Everyone', 'Everyone 10+', 'Teen', 'Mature 17+', 'Adults only 18+', 'Unsorted']
+
+m_installs_per_cr_plot = sns.barplot(data=m_installs_per_cr, x='Content Rating', y='Installs', order=order_var, palette='viridis')
+
+plt.tight_layout()
+
+# title
+plt.title('Figure 5.\nMean number of downloads per content rating category')
+
+# formatting
+sns.despine(bottom=True, left=True)
+m_installs_per_cr_plot.tick_params(axis='x', which='both', bottom=False)
+
+plt.show()</code></pre>
+
+									<div class="code_output"> <img
+											src="images/project_1/pic14_res_downloads_per_cr_Fig5.png"> </div>
+									<p>Figure 5 clearly shows that the categories 'Everyone 10+' and 'Teen' have the
+										highest mean number of installs compared to other content rating categories.
+										This suggests that apps that can be used by everyone, or apps marketed at teens,
+										may be more succesful than apps marketed at adults. </p>
+
+
+									<br>
+									<h5>Mean number of downloads per age group per category</h5>
+									<pre><code class="language-py line-numbers"># We will look at the mean number of downloads of apps per app category per content rating category
+# For this, the top 10 of categories with the most downloads will be used (figure 1A).
+top_10_downloads_categories = ['COMMUNICATION', 'VIDEO_PLAYERS', 'SOCIAL', 'ENTERTAINMENT', 'PHOTOGRAPHY', 'PRODUCTIVITY', 'GAME', 'TRAVEL_AND_LOCAL', 'TOOLS', 'NEWS_AND_MAGAZINES']
+
+# select only data within the 10 most popular categories. 
+top_10_categories_most_downloads = app_data[app_data['Category'].isin(top_10_downloads_categories)]
+
+# Then, select only the relevant columns for this analysis
+top_10_categories_most_downloads = top_10_categories_most_downloads[['Category', 'Installs', 'Content Rating']]
+
+# Sort the results by mean number of downloads. 
+top_10_categories_most_downloads = top_10_categories_most_downloads.sort_values(by='Installs', ascending=False)
+
+# Pivot the table to create a heatmap with. 
+top_10_categories_most_downloads_pivoted = top_10_categories_most_downloads.pivot_table(values='Installs',index='Category',columns='Content Rating',aggfunc=np.mean)
+																		
+										
+# Create a heatmap.
+plot_installs_per_category_cr = sns.heatmap(data=top_10_categories_most_downloads_pivoted, cmap='viridis_r', annot=True)
+										
+# formatting
+plt.title('Figure 6.\nMean number of installs per app category and content rating')
+plot_installs_per_category_cr.tick_params(which='both', left=False)
+										
+plt.show()</code></pre>
+
+									<div class="code_output"> <img
+											src="images/project_1/pic15_downloads_per_cat_and_cr_Fig6.png"> </div>
+									<p>As can be seen in figure 6, the highest number of app installs is for the app
+										category 'video player' in the age category 'Teen'. Other popular app categories
+										with a 'Teen' rating are 'social', 'news and magazines' and 'entertainment'; all
+										categories that can be used to stay in touch with peers and keep up to date with
+										recent happenings.
+										'Communication' apps for all age groups are downloaded often.</p>
+								</div>
+
+								<div id="app_costs">
+									<br>
+									<h4>App costs</h4>
+									<h5>Mean number of downloads for paid and free apps</h5>
+									<pre><code class="language-py line-numbers">freevspaid = sns.countplot(y='Installs', data=app_data, hue='Type', palette='viridis')
+
+plt.tight_layout()
+										
+# title
+plt.title('Figure 7.\nTotal number of installs for paid and free apps')
+										
+# formatting
+sns.despine(bottom=True, left=True)
+freevspaid.tick_params(axis='y', which='both', left=False)
+										
+plt.show()</code></pre>
+									<div class="code_output"> <img
+											src="images/project_1/pic16_downloads_per_price_Fig7.png"
+											alt="number of downloads per paid and free apps"> </div>
+									<p>We can see in figure 7 above that the total number of installs for free apps is a
+										lot higher than the total number of installs for paid apps. It is possible that
+										consumers are more willing to download a free app compared to a paid app because
+										they are unsure about the quality of the paid app. Another option is that there
+										might be plenty of free apps that offer similar functionality as known paid apps
+										on the market.
+									</p>
+									<p>
+										Free apps can create income through showing ads or by offering in-app purchases.
+									</p>
+								</div>
 
 							</section>
 
-							<section>
+							<section id="conclusion">
 								<header>
 									<h3>Final Advice</h3>
 								</header>
-								<p>The current Google Play Store app market is filled with a wide choice variety and
+								<p>The current Google PlayStore app market is filled with a wide choice variety and
 									almost 10.000 apps. The app store data of previous years was analysed with a focus
 									on the most succesful app categories and target audience, and paid and free apps
 									were compared. This data is most valuable to create a business plan for a new app
@@ -592,7 +780,11 @@ top_10_installs
 									targeted at teens in one of the popular app categories such as entertainment,
 									photography, productivity, tools, or game.
 								</p>
+
 							</section>
+							<br>
+							<br>
+							<p><i>Written by Eva Verkade <br>Last Edited: March 15, 2023.</i></p>
 						</article>
 
 					</div>
