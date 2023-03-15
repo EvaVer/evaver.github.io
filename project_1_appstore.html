@@ -10,7 +10,8 @@
 	<title>Eva Verkade - Project</title>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-	<link rel="stylesheet" href="assets/css/main.css" />
+	<link rel="stylesheet" href="assets/css/main.css"/>
+	<link rel="stylesheet" href="assets/css/prism.css"/>
 </head>
 
 <body class="right-sidebar is-preload">
@@ -72,10 +73,7 @@
 								<header>
 									<h3>Data Preparation</h3>
 								</header>
-
-								<p>
-									<bold>Data preparation steps</bold>
-								</p>
+								<p><bold>Data preparation steps</bold></p>
 								<ul>
 									<li>inspect the dataset visually</li>
 									<li>inspect the datatypes of the variables and change where necessary.</li>
@@ -83,6 +81,37 @@
 									<li>look for missing data: how much information is missing, and is this a problem?
 									</li>
 								</ul>
+								<pre>
+									<code id="code_block">
+<span id="code_comment"># The libraries used in this project</span>
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+										
+<span id="code_comment"># Show matplotlib's plots in Jupyter notebook</span>
+%matplotlib inline
+									</code>
+								</pre>
+
+								<h4>Inspect the dataset visually</h4>
+								<pre>
+									<code id="code_block">
+app_data = pd.read_csv('googleplaystore.csv')
+
+app_data.head()
+app_data.info()
+									</code>
+								</pre>
+								
+								<div id="output">
+									Out:
+									<span id="inner_output">
+										<img src="images/project_1/pic1_head.png" alt="top 5 rows of the table">
+										<img src="images/project_1/pic2_info.png" alt="data types of the table columns">
+									</span>
+								</div>
+
 
 								<h4>Move row .....</h4>
 								<p>
@@ -93,36 +122,79 @@
 									code below). It became clear that one or more rows had shifted in the dataset.
 								</p>
 								<p>Before continuing data preparation, this shifted row needs to be corrected.</p>
-								<p>SHOW CODE ON HOW THIS WAS DONE</p>
-								<pre>
-									<code id="code_block">
-app_data["Installs"].unique()
-									</code>
-								</pre>
+<pre><code class="language-py line-numbers">app_data["Installs"].unique()</code></pre>
 
-								<div id="output">
-									Out:
-									<span id="inner_output">array(['10,000+', '500,000+', '5,000,000+', '50,000,000+',
-										'100,000+','50,000+', '1,000,000+', '10,000,000+', '5,000+', '100,000,000+',
-										'1,000,000,000+', '1,000+', '500,000,000+', '50+', '100+', '500+', '10+', '1+',
-										'5+', '0+', '0'], dtype=object)</span>
-								</div>
-								
-								<pre>
-									<code id="code_block">
-app_data["Installs"].unique()
-move_column = app_data.index[app_data["Installs"] == 'Free'].tolist()
-									</code>
-								</pre>
+<div id="output">
+	Out:
+	array(['10,000+', '500,000+', '5,000,000+', '50,000,000+', '100,000+',
+       '50,000+', '1,000,000+', '10,000,000+', '5,000+', '100,000,000+',
+       '1,000,000,000+', '1,000+', '500,000,000+', '50+', '100+', '500+',
+       '10+', '1+', '5+', '0+', '0', 'Free'], dtype=object)
+</div>
 
-								<pre>
-									<code id="code_block">
-# Remove all non-numeric values in each number
+<pre><code class="language-py line-numbers">column_to_move = app_data.index[app_data["Installs"] == 'Free'].tolist()</code></pre>
+
+<div id="output">
+	Out:
+	[10472]
+</div>
+
+<pre><code class="language-py line-numbers"># Show the data of this one row with value 'Free'
+app_data.iloc[10472]</code></pre>
+
+<img src="images/project_1/pic3_shiftedrow_1.png" src="image showing a shifted row">
+
+<pre><code class="language-py line-numbers"># Shift this one row one column to the right starting from 'Installs', so that the variables match up.
+column_to_move_int = column_to_move[0]
+
 installs = app_data["Installs"]
-new_installs = []
+installs_row = installs[column_to_move_int]
 
-# Remove the commas, periods, spaces and plus signs.
-# Loop over every object in the series, then loop over each character in each object and check if it is alphanumeric.
+#This shifts the data of this column one space below (this is a series).
+app_data.iloc[10472] = app_data.iloc[10472].shift(1, fill_value=float("NaN"))</code></pre>
+
+<img src="images/project_1/pic3_shiftedrow_2.png" src="image showing a shifted row">
+
+<pre><code class="language-py line-numbers"># Change the variable in 'App' (now nan) to the variable in 'Category', which now contains the app name.
+app_data.at[10472, "App"] = app_data.at[10472, "Category"]
+
+# Then change the variable of 'Category' to missing nan.
+# Category of this app will not be filled in later. One missing value will not greatly impact the analyses.
+app_data.at[10472, "Category"] = float("nan")
+
+# Check that the values of this column are correct now.
+app_data.iloc[10472]</code></pre>
+
+<img src="images/project_1/pic3_shiftedrow_3_solved.png" src="image showing a shifted row">
+
+								<div>
+									<h4>Change datatypes of data</h4>
+									<h5>Column 'Reviews' to integer datatype</h5>
+									<p>This was the easiest column to convert.</p>
+									<pre><code class="language-py line-numbers">app_data["Reviews"] = app_data["Reviews"].astype(int)</code></pre>
+
+									<h5>Column 'Installs' to integer datatype</h5>
+									<p>Before changing this data to an integer datatype, the '+' and ',' in the string
+										values must be removed.</p>
+
+									<pre><code class="language-py line-numbers">app_data["Installs"].unique()</code></pre>
+									<div id="output">
+										Out:
+										<span id="inner_output">array(['10,000+', '500,000+', '5,000,000+',
+											'50,000,000+',
+											'100,000+','50,000+', '1,000,000+', '10,000,000+', '5,000+', '100,000,000+',
+											'1,000,000,000+', '1,000+', '500,000,000+', '50+', '100+', '500+', '10+',
+											'1+',
+											'5+', '0+', '0'], dtype=object)</span>
+									</div>
+									<pre>
+									<code id="code_block">
+<span id="code_comment"># Remove all non-numeric values in each number</span>
+installs = app_data["Installs"]
+new_installs = [ ]
+	
+<span id="code_comment"># Remove the commas, periods, spaces and plus signs.</span>
+<span id="code_comment"># Loop over every object in the series, then loop over each character in each object and check if it is alphanumeric.</span>
 for number in installs:
 	new_object = ''
 	for char in number:
@@ -131,52 +203,95 @@ for number in installs:
 	else:
 		pass
 	new_installs.append(new_object)
+	
+<span id="code_comment"># Overwrite the column column with the new series.</span>
+app_data["Installs"] = pd.Series(new_installs)
+	
+<span id="code_comment"># Cast the column values as integers.</span>
+app_data["Installs"] = app_data["Installs"].astype(int)
 									</code>
 								</pre>
 
+									<h5>Column 'Size' to integer datatype</h5>
+									<p>The column size contains both numeric and letter values. An example of a value is
+										'19M'. In order to change this data type to an integer, the M and K's need to be
+										removed from the string, and the numeric values multiplied by either 1000 (K) or
+										1,000,000 (M).</p>
+									<pre>
+										<code id="code_block">
+<span id="code_comment"># Remove all non-numeric values in each number</span>
+size = app_data["Size"]
 
-								<h4>Change datatypes of data</h4>
-								<h5>Column 'Reviews' to integer datatype</h5>
-								<p>This was the easiest column to convert.</p>
-								<pre>
-									<code id="code_block">
-app_data["Reviews"] = app_data["Reviews"].astype(int)
-									</code>
-								</pre>
+<span id="code_comment"># Create a new list, turn these into series then columns later.</span>
+new_size_list = []
 
-								<h5>Column 'Installs' to integer datatype</h5>
-								<p>Before changing this data to an integer datatype, the '+' and ',' in the string
-									values must be removed.</p>
-								<p>SHOW CODE ON HOW THIS WAS DONE</p>
+<span id="code_comment"># Loop over every value in the series.</span>
+<span id="code_comment"># Extract the numeric values from the series and change M's into 1000000's and K's into 1000's.</span>
+for value in size:
+    new_object = 0
+    
+    if value == 'Varies with device':
+        new_object = float('NaN')
+    elif value == '':
+        new_object = float('NaN')
+    else:
+        size_letter = ''
+        numeric_value = 0
+    
+        <span id="code_comment"># get size (letter, is 'Kb' or 'Mb')</span>
+        size_letter = value[-1].lower()
+        
+        <span id="code_comment"># get the numeric value</span>
+        numeric_values = float(value[:-1])
+        
+        <span id="code_comment"># multiply numeric value with size (letter)</span>
+        if size_letter == 'k':
+            numeric_values = numeric_values * 1000     #K is 1000
+        elif size_letter == 'm':
+            numeric_values = numeric_values * 1000000  #M is 1.000.000
+            
+        new_object = int(numeric_values)
+        
+	<span id="code_comment"># add to the list</span>
+    new_size_list.append(new_object)
 
-								<h5>Column 'Size' to integer datatype</h5>
-								<p>The column size contains both numeric and letter values. An example of a value is
-									'19M'. In order to change this data type to an integer, the M and K's need to be
-									removed from the string, and the numeric values multiplied by either 1000 (K) or
-									1,000,000 (M).</p>
-								<p>SHOW CODE ON HOW THIS WAS DONE</p>
+<span id="code_comment"># Replace the values of 'Size' column (Series) with the newly formed list.</span>
+app_data["Size"] = new_size_list
 
-								<h5>Column 'Content Rating' to category datatype</h5>
-								<p>I checked the number of unique values in the 'Content Rating' column and decided this
-									column was suitable for a category datatype. A category datatype can reduce memory
-									usage by making the categories easier accessible in memory.</p>
-								<p>SHOW CODE ON HOW THIS WAS DONE</p>
+<span id="code_comment"># Cast the column as a float datatype.</span>
+app_data["Size"] = app_data["Size"].astype(float)
+										</code>
+									</pre>
 
-								<h5>Column 'Price' to float datatype</h5>
-								<p>'Price' is a suitable column to turn into a float. Before processing, the data values
-									were formatted like '$4.99'. The dollar sign was removed in order to turn this value
-									into a float.</p>
-								<p>SHOW CODE ON HOW THIS WAS DONE</p>
+									<h5>Column 'Content Rating' to category datatype</h5>
+									<p>I checked the number of unique values in the 'Content Rating' column and decided
+										this
+										column was suitable for a category datatype. A category datatype can reduce
+										memory
+										usage by making the categories easier accessible in memory.</p>
+									<p>SHOW CODE ON HOW THIS WAS DONE</p>
 
-								<h5>Column 'Type' to category datatype</h5>
-								<p>Similarly to the 'Content Rating' column, I checked the number of unique values in
-									the 'Type' column and decided this column was suitable for a category datatype.</p>
-								<p>SHOW CODE ON HOW THIS WAS DONE</p>
+									<h5>Column 'Price' to float datatype</h5>
+									<p>'Price' is a suitable column to turn into a float. Before processing, the data
+										values
+										were formatted like '$4.99'. The dollar sign was removed in order to turn this
+										value
+										into a float.</p>
+									<p>SHOW CODE ON HOW THIS WAS DONE</p>
 
-								<h5>Column 'Rating' to float datatype</h5>
-								<p>Rating was a float datatype formatted like a string. No special editing was needed to
-									change the datatype of this column.</p>
-								<p>SHOW CODE ON HOW THIS WAS DONE</p>
+									<h5>Column 'Type' to category datatype</h5>
+									<p>Similarly to the 'Content Rating' column, I checked the number of unique values
+										in
+										the 'Type' column and decided this column was suitable for a category datatype.
+									</p>
+									<p>SHOW CODE ON HOW THIS WAS DONE</p>
+
+									<h5>Column 'Rating' to float datatype</h5>
+									<p>Rating was a float datatype formatted like a string. No special editing was
+										needed to
+										change the datatype of this column.</p>
+									<p>SHOW CODE ON HOW THIS WAS DONE</p>
+								</div>
 
 								<h4>Duplicate values</h4>
 								<p>It is important to check that all app names are unique, otherwise you run the risk of
@@ -344,6 +459,7 @@ app_data["Reviews"] = app_data["Reviews"].astype(int)
 	<script src="assets/js/breakpoints.min.js"></script>
 	<script src="assets/js/util.js"></script>
 	<script src="assets/js/main.js"></script>
+	<script src="assets/js/prism.js"></script>
 
 </body>
 
