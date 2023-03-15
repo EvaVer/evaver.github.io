@@ -41,55 +41,100 @@
 
 						<!-- Content -->
 						<article class="box post">
-							<a href="#" class="image featured"><img src="images/project_2/pic_project_2_us_accidents_large.png" alt="" /></a>
+							<a href="#" class="image featured"><img
+									src="images/project_2/pic_project_2_us_accidents_large.png" alt="" /></a>
 							<header>
 								<h2>Car Accidents in the US</h2>
-								<p>A Power BI dashboard giving insights about locations and weather types associated with accidents</p>
+								<p>A Power BI dashboard giving insights about locations and weather types associated
+									with accidents</p>
 							</header>
 							<p>This is all introduction text about the aim of the project.</p>
-							<p>This project is still under development.</p>
-							<section>
+							<p>This project is still under development! I have started this, but i haven't finished
+								putting the project on this web page.</p>
+							<section id="introduction">
 								<header>
 									<h3>Introduction</h3>
 								</header>
 								<p>
-									Elementum odio duis semper risus et lectus commodo fringilla. Maecenas sagittis
-									convallis justo vel mattis.
-									placerat, nunc diam iaculis massa, et aliquet nibh leo non nisl vitae porta
-									lobortis, enim neque fringilla nunc,
-									eget faucibus lacus sem quis nunc suspendisse nec lectus sit amet augue rutrum
-									vulputate ut ut mi. Aenean
-									elementum, mi sit amet porttitor lorem ipsum dolor sit amet, consectetur adipiscing
-									elit. Lorem ipsum dolor
-									sit amet nullam consequat feugiat dolore tempus.
+									In 2020, 5,250,837 collisions were reported in the US, of which 35,766 had fatal outcomes <a href="https://www.forbes.com/advisor/legal/car-accident-statistics/">(source)</a> . 
 								</p>
-								<p>
-									Nunc diam iaculis massa, et aliquet nibh leo non nisl vitae porta lobortis, enim
-									neque fringilla nunc,
-									eget faucibus lacus sem quis nunc suspendisse nec lectus sit amet augue rutrum
-									vulputate ut ut mi. Aenean
-									elementum, mi sit amet porttitor lorem ipsum dolor sit amet, consectetur adipiscing
-									elit. Lorem ipsum dolor
-									sit amet nullam consequat feugiat dolore tempus.
-								</p>
+								<p>This dataset was analysed with a car insurance company in mind. A dashboard was
+									created using Microsoft Power BI. This dashboard provides a hypothetical insurance
+									company with insights on relevant characteristics associated with the number and severity of car accidents. This dashboard is accompanied by
+									an interpretation in text, with actionable insights and suggestions to improve
+									insurance premiums and to help decrease the number of accidents.</p>
 							</section>
-							<section>
+							<section id="description_dataset">
 								<header>
-									<h3>First steps</h3>
+									<h3>Description of the dataset</h3>
 								</header>
-								<p>
-									Elementum odio duis semper risus et lectus commodo fringilla. Maecenas sagittis
-									convallis justo vel mattis.
-									placerat, nunc diam iaculis massa, et aliquet nibh leo non nisl vitae porta
-									lobortis, enim neque fringilla nunc,
-									eget faucibus lacus sem quis nunc suspendisse nec lectus sit amet augue rutrum
-									vulputate ut ut mi. Aenean
-									elementum, mi sit amet porttitor lorem ipsum dolor sit amet, consectetur adipiscing
-									elit. Lorem ipsum dolor
-									sit amet nullam consequat feugiat dolore tempus.
+								<ul>This dataset was obtained from <a
+										href="https://www.kaggle.com/datasets/sobhanmoosavi/us-accidents">Kaggle</a>,
+									which requested I also cite the following references:
+									<li>Moosavi, Sobhan, Mohammad Hossein Samavatian, Srinivasan Parthasarathy, and
+										Rajiv Ramnath. “A Countrywide Traffic Accident Dataset.”, 2019.</li>
+									<li>Moosavi, Sobhan, Mohammad Hossein Samavatian, Srinivasan Parthasarathy, Radu
+										Teodorescu, and Rajiv Ramnath. "Accident Risk Prediction based on Heterogeneous
+										Sparse Data: New Dataset and Insights." In proceedings of the 27th ACM
+										SIGSPATIAL International Conference on Advances in Geographic Information
+										Systems, ACM, 2019.</li>
+								</ul>
+
+								<p>This dataset was obtained using APIs. Collection ranged from February 2016 to Dec
+									2021,
+									during which over 2,8 million accidents were recorded.</p>
+								<p>The dataset is sizeable: 1.4 GB. Forty-seven columns provide information on a range
+									of factors associated with the registered accidents, including weather
+									circumstances, how much daylight was visible, the precise location of the accident,
+									and more.</p>
+							</section>
+							<section id="data_preparation">
+								<header>
+									<h3>Data Preparation</h3>
+								</header>
+								<p>The dataset .zip was unpacked and directly imported into Power BI.</p>
+								<ul>In Power BI, mutiple modeling steps were taken to improve efficiency of the data.
+									<li>removal of excess columns</li>
+									<li>improve the quality of existing columns</li>
+									<li>inspect missing data</li>
+									<li>group columns and variables to improve ease of working with the dataset</li>
+								</ul>
+
+								<h4>removal of excess columns</h4>
+								<p>Because of the size of the dataset it was important to remove columns that are not
+									relevant for the analysis. This will improve performance, an important aspect
+									because of the dataset size.
+								</p>
+
+								<h4>improve the quality of existing columns</h4>
+								<h5>Light status</h5>
+								<p>Text
+								</p>
+								<h5>Split the DateTime columns</h5>
+								<p>Separate datetime + date table: Datetime columns are a known to use a lot of memory.
+									The datetime column was split into a date and a time column. After that, a date
+									table
+									was created and all date columns were changed into an integer date key. An active
+									relationship was established between the Start Date Key and DateKey, and an inactive
+									relationship was established between the End Date Key and DateKey. DateKey is used
+									in
+									the report and a role-playing dimension to filter the results.
+								</p>
+
+								<h4>Missing data</h4>
+								<p>Text
+								</p>
+
+								<h4>Grouping of variables</h4>
+								<p>Text
+								</p>
+
+								<h4>Modelling of data</h4>
+								<p>No star schema
 								</p>
 							</section>
-							<section>
+
+							<section id="data_results">
 								<header>
 									<h3>Results</h3>
 								</header>
@@ -114,7 +159,8 @@
 									sit amet nullam consequat feugiat dolore tempus.
 								</p>
 							</section>
-							<section>
+
+							<section id="conclusion">
 								<header>
 									<h3>In conclusion ...</h3>
 								</header>
@@ -130,6 +176,13 @@
 									Maecenas sagittis convallis justo vel mattis.
 								</p>
 							</section>
+
+							<br>
+							<br>
+							<p><i>Written by Eva Verkade <br>Last Edited: March [date], 2023.</i></p>
+							<p>Image found on <a
+									href="https://www.vecteezy.com/photo/3334065-traffic-jam-in-urban-city">Vecteezy</a>
+							</p>
 						</article>
 
 					</div>
@@ -137,16 +190,17 @@
 
 						<!-- Sidebar -->
 						<section class="box">
-							<a href="#" class="image featured"><img src="images/pic09.jpg" alt="" /></a>
+							<a href="about_me.html" class="image featured"><img src="images/pic_about_me_580x580.png"
+									alt="an image of Eva Verkade" /></a>
 							<header>
-								<h3>About Me (short)</h3>
+								<h3>About Me</h3>
 							</header>
 							<p>Hi there! I am a young data analyst with a passion for health and sustainability. I am
-								familiar with SQL, python, Power BI, and more! I have experience analysing patient data
-								but I am looking for a job that offers new opportunities and challenges.
+								familiar with SQL, python, Power BI, and more! I created this website to host
+								<a href="projects_overview.html">data analysis projects</a> that display my skills.
 							</p>
 							<footer>
-								<a href="#" class="button alt">Magna sed taciti</a>
+								<a href="about_me.html" class="button alt">More About Me</a>
 							</footer>
 						</section>
 					</div>
@@ -172,7 +226,7 @@
 							</ul>
 						</section>
 					</div>
-				
+
 					<div class="col-4 col-12-medium">
 						<section>
 							<header>
