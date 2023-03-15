@@ -10,8 +10,9 @@
 	<title>Eva Verkade - Project</title>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-	<link rel="stylesheet" href="assets/css/main.css"/>
-	<link rel="stylesheet" href="assets/css/prism.css"/>
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<link rel="stylesheet" href="assets/css/codesnippets.css">
+	<link rel="stylesheet" href="assets/css/prism.css" />
 </head>
 
 <body class="right-sidebar is-preload">
@@ -71,9 +72,11 @@
 
 							<section>
 								<header>
-									<h3>Data Preparation</h3>
+									<h3>Data Preparation: Dataset 1</h3>
 								</header>
-								<p><bold>Data preparation steps</bold></p>
+								<p>
+									<bold>Data preparation steps</bold>
+								</p>
 								<ul>
 									<li>inspect the dataset visually</li>
 									<li>inspect the datatypes of the variables and change where necessary.</li>
@@ -81,39 +84,32 @@
 									<li>look for missing data: how much information is missing, and is this a problem?
 									</li>
 								</ul>
-								<pre>
-									<code id="code_block">
-<span id="code_comment"># The libraries used in this project</span>
+
+								<pre><code class="language-py line-numbers"># The libraries used during data preparation
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-										
-<span id="code_comment"># Show matplotlib's plots in Jupyter notebook</span>
-%matplotlib inline
-									</code>
-								</pre>
+import numpy as np</code></pre>
 
 								<h4>Inspect the dataset visually</h4>
-								<pre>
-									<code id="code_block">
-app_data = pd.read_csv('googleplaystore.csv')
+								<pre><code class="language-py line-numbers">app_data = pd.read_csv('googleplaystore.csv')
 
-app_data.head()
-app_data.info()
-									</code>
-								</pre>
-								
-								<div id="output">
-									Out:
-									<span id="inner_output">
-										<img src="images/project_1/pic1_head.png" alt="top 5 rows of the table">
-										<img src="images/project_1/pic2_info.png" alt="data types of the table columns">
-									</span>
-								</div>
+app_data.head()</code></pre>
+								<div class="code_output"><img src="images/project_1/pic1_head.png"
+										alt="top 5 rows of the table"></div>
+
+								<pre><code class="language-py line-numbers">app_data.info()</code></pre>
+								<div class="code_output"><img src="images/project_1/pic2_info.png"
+										alt="data types of the table columns"></div>
+								<p>The columns 'Genre', 'Last Updated', 'Current Ver' and 'Android Ver' will not be used
+									in the analyses, so these will be dropped. 'Category' will be used instead of
+									'Genres'. These columns were saved in variables so that the data was still available
+									after removal. These variables were not used later on in the project.</p>
+								<pre><code class="language-py line-numbers">last_updated = app_data.pop('Last Updated')
+current_ver = app_data.pop('Current Ver')
+android_ver = app_data.pop('Android Ver')
+genres = app_data.pop('Genres')</code></pre>
 
 
-								<h4>Move row .....</h4>
+								<br><h4>Shifted Row</h4>
 								<p>
 									During my initial analysis and data preparation , I was unable to turn the new
 									variable of "Installs" into an int because the column contained the value 'Free'.
@@ -122,29 +118,29 @@ app_data.info()
 									code below). It became clear that one or more rows had shifted in the dataset.
 								</p>
 								<p>Before continuing data preparation, this shifted row needs to be corrected.</p>
-<pre><code class="language-py line-numbers">app_data["Installs"].unique()</code></pre>
+								<pre><code class="language-py line-numbers">app_data["Installs"].unique()</code></pre>
 
-<div id="output">
-	Out:
-	array(['10,000+', '500,000+', '5,000,000+', '50,000,000+', '100,000+',
-       '50,000+', '1,000,000+', '10,000,000+', '5,000+', '100,000,000+',
-       '1,000,000,000+', '1,000+', '500,000,000+', '50+', '100+', '500+',
-       '10+', '1+', '5+', '0+', '0', 'Free'], dtype=object)
-</div>
+								<div id="output">
+									Out:
+									array(['10,000+', '500,000+', '5,000,000+', '50,000,000+', '100,000+',
+									'50,000+', '1,000,000+', '10,000,000+', '5,000+', '100,000,000+',
+									'1,000,000,000+', '1,000+', '500,000,000+', '50+', '100+', '500+',
+									'10+', '1+', '5+', '0+', '0', 'Free'], dtype=object)
+								</div>
 
-<pre><code class="language-py line-numbers">column_to_move = app_data.index[app_data["Installs"] == 'Free'].tolist()</code></pre>
+								<pre><code class="language-py line-numbers">column_to_move = app_data.index[app_data["Installs"] == 'Free'].tolist()</code></pre>
 
-<div id="output">
-	Out:
-	[10472]
-</div>
+								<div class="code_output">
+									Out:
+									[10472]
+								</div>
 
-<pre><code class="language-py line-numbers"># Show the data of this one row with value 'Free'
+								<pre><code class="language-py line-numbers"># Show the data of this one row with value 'Free'
 app_data.iloc[10472]</code></pre>
 
-<img src="images/project_1/pic3_shiftedrow_1.png" src="image showing a shifted row">
+								<img src="images/project_1/pic3_shiftedrow_1.png" src="image showing a shifted row">
 
-<pre><code class="language-py line-numbers"># Shift this one row one column to the right starting from 'Installs', so that the variables match up.
+								<pre><code class="language-py line-numbers"># Shift this one row one column to the right starting from 'Installs', so that the variables match up.
 column_to_move_int = column_to_move[0]
 
 installs = app_data["Installs"]
@@ -153,9 +149,9 @@ installs_row = installs[column_to_move_int]
 #This shifts the data of this column one space below (this is a series).
 app_data.iloc[10472] = app_data.iloc[10472].shift(1, fill_value=float("NaN"))</code></pre>
 
-<img src="images/project_1/pic3_shiftedrow_2.png" src="image showing a shifted row">
+								<img src="images/project_1/pic3_shiftedrow_2.png" src="image showing a shifted row">
 
-<pre><code class="language-py line-numbers"># Change the variable in 'App' (now nan) to the variable in 'Category', which now contains the app name.
+								<pre><code class="language-py line-numbers"># Change the variable in 'App' (now nan) to the variable in 'Category', which now contains the app name.
 app_data.at[10472, "App"] = app_data.at[10472, "Category"]
 
 # Then change the variable of 'Category' to missing nan.
@@ -165,7 +161,8 @@ app_data.at[10472, "Category"] = float("nan")
 # Check that the values of this column are correct now.
 app_data.iloc[10472]</code></pre>
 
-<img src="images/project_1/pic3_shiftedrow_3_solved.png" src="image showing a shifted row">
+								<img src="images/project_1/pic3_shiftedrow_3_solved.png"
+									src="image showing a shifted row">
 
 								<div>
 									<h4>Change datatypes of data</h4>
@@ -178,23 +175,20 @@ app_data.iloc[10472]</code></pre>
 										values must be removed.</p>
 
 									<pre><code class="language-py line-numbers">app_data["Installs"].unique()</code></pre>
-									<div id="output">
-										Out:
-										<span id="inner_output">array(['10,000+', '500,000+', '5,000,000+',
-											'50,000,000+',
-											'100,000+','50,000+', '1,000,000+', '10,000,000+', '5,000+', '100,000,000+',
-											'1,000,000,000+', '1,000+', '500,000,000+', '50+', '100+', '500+', '10+',
-											'1+',
-											'5+', '0+', '0'], dtype=object)</span>
+									<div class="code_output">Out:
+										array(['10,000+', '500,000+', '5,000,000+',
+										'50,000,000+',
+										'100,000+','50,000+', '1,000,000+', '10,000,000+', '5,000+', '100,000,000+',
+										'1,000,000,000+', '1,000+', '500,000,000+', '50+', '100+', '500+', '10+',
+										'1+', '5+', '0+', '0'], dtype=object)
 									</div>
-									<pre>
-									<code id="code_block">
-<span id="code_comment"># Remove all non-numeric values in each number</span>
+									<pre><code class="language-py line-numbers"># Remove all non-numeric characters in each value
+
 installs = app_data["Installs"]
 new_installs = [ ]
 	
-<span id="code_comment"># Remove the commas, periods, spaces and plus signs.</span>
-<span id="code_comment"># Loop over every object in the series, then loop over each character in each object and check if it is alphanumeric.</span>
+# Remove the commas, periods, spaces and plus signs.
+# Loop over every object in the series, then loop over each character in each object and check if it is alphanumeric.
 for number in installs:
 	new_object = ''
 	for char in number:
@@ -204,29 +198,25 @@ for number in installs:
 		pass
 	new_installs.append(new_object)
 	
-<span id="code_comment"># Overwrite the column column with the new series.</span>
+# Overwrite the existing column with the new series.
 app_data["Installs"] = pd.Series(new_installs)
 	
-<span id="code_comment"># Cast the column values as integers.</span>
-app_data["Installs"] = app_data["Installs"].astype(int)
-									</code>
-								</pre>
+# Cast the column values as integers.
+app_data["Installs"] = app_data["Installs"].astype(int)</code></pre>
 
+									<br>
 									<h5>Column 'Size' to integer datatype</h5>
 									<p>The column size contains both numeric and letter values. An example of a value is
 										'19M'. In order to change this data type to an integer, the M and K's need to be
 										removed from the string, and the numeric values multiplied by either 1000 (K) or
 										1,000,000 (M).</p>
-									<pre>
-										<code id="code_block">
-<span id="code_comment"># Remove all non-numeric values in each number</span>
-size = app_data["Size"]
+									<pre><code class="language-py line-numbers"># Remove all non-numeric values in each number
 
-<span id="code_comment"># Create a new list, turn these into series then columns later.</span>
+size = app_data["Size"]
 new_size_list = []
 
-<span id="code_comment"># Loop over every value in the series.</span>
-<span id="code_comment"># Extract the numeric values from the series and change M's into 1000000's and K's into 1000's.</span>
+# Loop over every value in the series.
+# Extract the numeric values from the series and change M's into 1000000's and K's into 1000's.
 for value in size:
     new_object = 0
     
@@ -238,13 +228,13 @@ for value in size:
         size_letter = ''
         numeric_value = 0
     
-        <span id="code_comment"># get size (letter, is 'Kb' or 'Mb')</span>
+        # get size (letter, is 'Kb' or 'Mb')
         size_letter = value[-1].lower()
         
-        <span id="code_comment"># get the numeric value</span>
+        # get the numeric value
         numeric_values = float(value[:-1])
         
-        <span id="code_comment"># multiply numeric value with size (letter)</span>
+        # multiply numeric value with size (letter)
         if size_letter == 'k':
             numeric_values = numeric_values * 1000     #K is 1000
         elif size_letter == 'm':
@@ -252,47 +242,90 @@ for value in size:
             
         new_object = int(numeric_values)
         
-	<span id="code_comment"># add to the list</span>
+	# add to the list
     new_size_list.append(new_object)
 
-<span id="code_comment"># Replace the values of 'Size' column (Series) with the newly formed list.</span>
+# Overwrite the existing column with the new list.
 app_data["Size"] = new_size_list
 
-<span id="code_comment"># Cast the column as a float datatype.</span>
-app_data["Size"] = app_data["Size"].astype(float)
-										</code>
-									</pre>
+# Cast the column values as floats
+app_data["Size"] = app_data["Size"].astype(float)</code></pre>
 
+									<br>
 									<h5>Column 'Content Rating' to category datatype</h5>
 									<p>I checked the number of unique values in the 'Content Rating' column and decided
 										this
 										column was suitable for a category datatype. A category datatype can reduce
 										memory
 										usage by making the categories easier accessible in memory.</p>
-									<p>SHOW CODE ON HOW THIS WAS DONE</p>
+									<pre><code class="language-py line-numbers"># check how many unique values are in the 'Content Rating'. 
+print(app_data["Content Rating"].nunique())
+print(app_data["Content Rating"].unique())</code></pre>
 
+									<div class="code_output">Out:
+										6<br>
+										['Everyone' 'Teen' 'Everyone 10+' 'Mature 17+' 'Adults only 18+' 'Unrated']
+									</div>
+
+									<pre><code class="language-py line-numbers">app_data["Content Rating"] = app_data["Content Rating"].astype("category")</code></pre>
+
+									<br>
 									<h5>Column 'Price' to float datatype</h5>
 									<p>'Price' is a suitable column to turn into a float. Before processing, the data
 										values
 										were formatted like '$4.99'. The dollar sign was removed in order to turn this
 										value
 										into a float.</p>
-									<p>SHOW CODE ON HOW THIS WAS DONE</p>
+									<pre><code class="language-py line-numbers"># Remove all non-numeric values in each number
+price = app_data["Price"]
+new_price = []
+	
+# Remove the '$' sign in each row of "Price".
+# Loop over every object in the series, then over each character in each object.
+for number in price:
+	new_object = ''
+	for char in number:
+		if char == '$':
+			pass
+		else:
+			new_object += char
+	new_price.append(new_object)
+	
+# Now turn the list into a Series.
+price_float = pd.Series(new_price)
 
+# Overwrite the exising column and cast the datatype as floats.
+app_data["Price"] = pd.Series(price_float).astype(float)</code></pre>
+
+									<br>
 									<h5>Column 'Type' to category datatype</h5>
 									<p>Similarly to the 'Content Rating' column, I checked the number of unique values
 										in
 										the 'Type' column and decided this column was suitable for a category datatype.
 									</p>
-									<p>SHOW CODE ON HOW THIS WAS DONE</p>
+									<pre><code class="language-py line-numbers"># check how many unique values are in this column
+app_data["Category"].value_counts()</code></pre>
 
+									<img src="images/project_1/pic4_type.png"
+										src="image showing the number of rows per app category">
+
+									<pre><code class="language-py line-numbers"># check: how many unique values
+app_data["Category"].nunique()</code></pre>
+
+									<div class="code_output">Out: 33</div>
+
+									<pre><code class="language-py line-numbers"># Create a new column to keep the two app category columns separate in analyses later.
+# Cast the data type to category.
+app_data.insert(loc=2, column='Category_cat', value=app_data["Category"].astype("category"))</code></pre>
+
+									<br>
 									<h5>Column 'Rating' to float datatype</h5>
 									<p>Rating was a float datatype formatted like a string. No special editing was
-										needed to
-										change the datatype of this column.</p>
-									<p>SHOW CODE ON HOW THIS WAS DONE</p>
+										needed to change the datatype of this column.</p>
+									<pre><code class="language-py line-numbers">app_data["Rating"] = app_data["Rating"].astype(float)</code></pre>
 								</div>
 
+								<br>
 								<h4>Duplicate values</h4>
 								<p>It is important to check that all app names are unique, otherwise you run the risk of
 									analysing the same app multiple times, which will introduce bias.</p>
@@ -301,26 +334,220 @@ app_data["Size"] = app_data["Size"].astype(float)
 									app name but had slight differences in app size, rating, and number of
 									downloads. It was decided to keep one row per app and app category, since app
 									category is one of the main elements of the later data analysis</p>
+								<pre><code class="language-py line-numbers">print(app_data["App"].is_unique)</code></pre>
+								<div class="code_output">Out: False</div>
+
+								<pre><code class="language-py line-numbers">len(app_data["App"])</code></pre>
+								<div class="code_output">Out: 10841</div>
+
+								<p>Now these two outputs show that there are duplicate values in this dataset. The total
+									number of rows right now is 10.841.</p>
+
+								<pre><code class="language-py line-numbers"># Identify all rows that are duplicates. These rows have the exact same value for all columns.
+# Here it only shows the top 10 so i can visually see the rows.
+app_data[app_data.duplicated(keep=False)].sort_values(by='App').head(10)</code></pre>
+								<div class="code_output"><img src="images/project_1/pic5_duplicates.png"
+										src="image showing duplicate rows"></div>
+
+								<pre><code class="language-py line-numbers"># Remove all rows that are exactly the same. Overwrite the existing dataframe.
+app_data = app_data.drop_duplicates()
+
+# Check how many rows were deleted this way.
+print(len(app_data))</code></pre>
+								<div class="code_output">Out: 10356</div>
+
+								<p>All duplicate rows have succesfully been deleted from the dataset. We now have
+									10841-10358 = 483 less rows. There are no more app duplicates with the same values
+									for all columns. </p>
+								<p>In the overview below, we can see that some apps have duplicate entries in this
+									dataset. Visual inspection leads to the conclusion that these apps differ on the
+									'Category' and 'Reviews' columns. However, the number of reviews is very similar for
+									each duplicate version.
+									For each app, we will keep one row per app 'Category'. Most of the main analyses
+									focus on differences between app categories, and this way we will keep data present
+									in both categories.</p>
+								<pre><code class="language-py line-numbers"># Inspect the duplicates of the 'App' value. These values have the same app name, but other values for other variables
+app_data[app_data.duplicated(subset="App", keep=False)].sort_values(by='App').head(15)</code></pre>
+
+								<div class="code_output"><img src="" alt="image showing duplicate rows"></div>
+
+								<pre><code class="language-py line-numbers"># Keep only the first instance of a row where 'App' and 'Category' are unique. Drop other values.
+app_data = app_data.drop_duplicates(subset=['App', 'Category'], keep='first').sort_values(by='App')
+
+print(len(app_data))</code></pre>
+
+								<div class="code_output">Out: 9745</div>
+
 								<p>In the end, 1096 rows with duplicate values were removed from the dataset. The
 									dataset was left with 9745 rows.</p>
-								<p>SHOW CODE ON HOW THIS WAS DONE</p>
 							</section>
+
+							<section>
+								<header>
+									<h3>Data Preparation: Dataset 2</h3>
+								</header>
+
+								<p>
+									<bold>Data preparation steps</bold>
+								</p>
+								<ul>
+									<li>inspect the dataset visually</li>
+									<li>look for missing data: how much information is missing, and is this a problem?
+									</li>
+									<li>inspect the datatypes of the variables and change where necessary.</li>
+									<li>look for duplicates in the data</li>
+								</ul>
+
+								<h4>Inspect the dataset visually</h4>
+								<pre><code class="language-py line-numbers">reviews = pd.read_csv("googleplaystore_user_reviews.csv")
+
+reviews.head(10)</code></pre>
+								<div class="code_output"><img src="images/project_1/pic6_head_dataset2.png"
+										alt="top 10 rows of dataset 2"></div>
+
+								<pre><code class="language-py line-numbers">reviews.info()</code></pre>
+								<div class="code_output"><img src="images/project_1/pic7_info_dataset2.png"
+										alt="metadata of dataset 2"></div>
+
+								<h4>Missing data</h4>
+								<p>This table has a lot of missing data as shown by the info( ) method in the cell
+									above. Only 'App' has full data on everything. </p>
+								<p>In this data frame, it is not a problem if 'Translated_Review' is missing since this
+									data analysis will not include a text analysis. However, we do need a value for
+									'Sentiment', 'Sentiment_Polarity' and 'Sentiment_Subjectivity' in order to analyse
+									the data.</p>
+
+								<pre><code class="language-py line-numbers">subset_to_keep = ['Sentiment', 'Sentiment_Polarity', 'Sentiment_Subjectivity']
+
+# Drop any rows with missing values in 'Sentiment', 'Sentiment_Polarity' or 'Sentiment_Subjectivity'.
+# Overwrite the existing dataframe.
+reviews = reviews.dropna(subset=subset_to_keep)
+
+print(len(reviews))</code></pre>
+								<div class="code_output">Out: 37432</div>
+								<p>The new length of 'reviews' data frame is now 37.432, which means that 26.863 rows
+									with missing data were dropped.</p>
+
+								<h4>Data types</h4>
+								<pre><code class="language-py line-numbers"># check: how many unique values?
+reviews["Sentiment"].nunique()</code></pre>
+								<div class="code_output">Out: 37432</div>
+
+								<pre><code class="language-py line-numbers"># check: missing values?
+reviews["Sentiment"].hasnans</code></pre>
+								<div class="code_output">Out: True</div>
+
+								<pre><code class="language-py line-numbers"># True, so fill in missing values with fillna() method. Overwrite the existing column.
+reviews["Sentiment"] = reviews["Sentiment"].fillna("Missing")
+
+# Cast the data type to category.
+reviews["Sentiment"] = reviews["Sentiment"].astype("category")</code></pre>
+							</section>
+
+
+
+
+
+
+
+
+
+
+
+
 
 							<section>
 								<header>
 									<h3>Data Analysis Results</h3>
 								</header>
-								<p>
-									Elementum odio duis semper risus et lectus commodo fringilla. Maecenas sagittis
-									convallis justo vel mattis.
-									placerat, nunc diam iaculis massa, et aliquet nibh leo non nisl vitae porta
-									lobortis, enim neque fringilla nunc,
-									eget faucibus lacus sem quis nunc suspendisse nec lectus sit amet augue rutrum
-									vulputate ut ut mi. Aenean
-									elementum, mi sit amet porttitor lorem ipsum dolor sit amet, consectetur adipiscing
-									elit. Lorem ipsum dolor
-									sit amet nullam consequat feugiat dolore tempus.
-								</p>
+								<p>The data analysis identified popular and succesful app categories and a suitable
+									target audience range within these categories. Additionally, the popularity of free
+									apps was compared to the popularity of paid apps. These variables were deemed to be
+									most important for creating an advice.</p>
+								<ul><bold>App characteristics that were studied:</bold>
+									<li>App category</li>
+									<li>App content rating (age group of target audience)</li>
+									<li>App costs</li>
+									<li>App downloads</li>
+									<li>App rating and sentiment</li>
+								</ul>
+								<pre><code class="language-py line-numbers"># New libraries used during data analysis
+import matplotlib.pyplot as plt
+import seaborn as sns
+									
+# Show matplotlib's plots in Jupyter notebook
+%matplotlib inline</code></pre>
+
+								<br><h4>App categories</h4>
+								<br><h5>Mean number of downloads per category</h5>
+								<pre><code class="language-py line-numbers">app_data['Category'].value_counts().head(10)</code></pre>
+								<div class="code_output"> <img src="images/project_1/pic8_res_apps_per_cat.png"> </div>
+								<p>In the table above we can see the app categories with the most apps. Categories with a lot of apps are family, game, tools, business and medical. if a category has many apps currently, then it will be likely that the market for apps of said category is already saturated.</p>
+								
+								<br><h5>Mean app rating per category</h5>
+<pre><code class="language-py line-numbers">
+# Get the mean number of installations of apps per app category.
+mean_installs_per_category = app_data.groupby("Category_cat", as_index = False)["Installs"].mean()
+	
+# Then sort these categories by the number of installs
+mean_installs_per_category = mean_installs_per_category.sort_values(by="Installs", ascending=False)</code></pre>
+
+<div class="code_output"> <img src="images/project_1/"> </div>
+
+
+
+<pre><code class="language-py line-numbers"># select only data within the 10 most popular categories. 
+top_10_categories = ['COMMUNICATION', 'VIDEO_PLAYERS', 'SOCIAL', 'ENTERTAINMENT', 'PHOTOGRAPHY', 'PRODUCTIVITY', 'GAME', 'TRAVEL_AND_LOCAL', 'TOOLS', 'NEWS_AND_MAGAZINES']
+
+
+
+
+top_10_categories_most_installs = app_data[app_data['Category'].isin(top_10_categories)]
+
+# Get the mean number of app downloads per app category.
+top_10_categories_most_installs = top_10_categories_most_installs.groupby("Category", as_index = False)["Installs"].mean()
+# Then sort these categories by the number of downloads
+top_10_categories_most_installs = top_10_categories_most_installs.sort_values(by='Installs', ascending=False)
+
+
+# Create a bar plot of the 10 most popular categories
+# Create a base bar plot to show the mean number of installs.
+installspercat = sns.barplot(data=m_installs_top_10_ordered, x='Installs', y='Category', palette='viridis')
+plt.tight_layout()
+
+# title
+plt.title('Figure 1A.\nMean number of installs per app category')
+
+# remove axes and change labels
+sns.despine(bottom=True, left=True)
+installspercat.tick_params(bottom=False, left=False)
+
+
+top_10_installs
+
+</code></pre>
+
+								<p>This is a paragraph</p>
+								
+								<br><h5>Sentiment polarity per category</h5>
+								<p>This is a paragraph</p>
+
+								<br><h4>App target audience</h4>
+								<br><h5>Mean number of downloads per age group</h5>
+								<p>This is a paragraph</p>
+								<br><h5>Mean number of downloads per age group per category</h5>
+								<p>This is a paragraph</p>
+
+								<br><h4>App costs</h4>
+								<p>Paid vs free apps</p>
+								<p>This is a paragraph</p>
+
+
+
+
+
+
+
 							</section>
 
 							<section>
