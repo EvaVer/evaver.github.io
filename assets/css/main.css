@@ -2938,8 +2938,7 @@ facts {
 		text-align: center;
 		color: #fff;
 		line-height: 1em;
-		border-top-left-radius: 5px;
-		border-bottom-left-radius: 5px;
+		border-radius: 5px;
 		padding: 1em 1.25em 0.1em;
 		margin: 1.5em 0em 0em 0em;
 	}
